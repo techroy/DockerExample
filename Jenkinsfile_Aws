@@ -1,0 +1,22 @@
+pipeline { 
+    agent any  
+    tools{
+        maven 'Maven_3.8.4'
+    }
+    stages { 
+        stage('Logging') { 
+            steps { 
+               echo 'This is a minimal pipeline.' 
+            }
+        }
+        
+        stage('Build maven') { 
+            steps { 
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/techroy/DockerExample']])
+                sh 'mvn clean install'
+            }
+        }
+    }
+    
+   
+}
