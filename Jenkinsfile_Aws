@@ -5,7 +5,7 @@ pipeline {
         AWS_DEFAULT_REGION="ap-south-1"
         IMAGE_REPO_NAME="jenkins-pipeline-build"
         IMAGE_TAG="latest"
-        REPOSITORY_URI = "291579589752.dkr.ecr.ap-south-1.amazonaws.com"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
     } 
     tools{
         maven 'Maven_3.8.4'
