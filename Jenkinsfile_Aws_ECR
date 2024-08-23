@@ -1,0 +1,69 @@
+pipeline { 
+    agent any 
+    environment {
+
+        // AWS Account Cfg
+        AWS_ACCOUNT_ID="291579589752"
+        AWS_DEFAULT_REGION="ap-south-1"
+
+        // ECR Cfg
+
+        IMAGE_REPO_NAME="jenkins-pipeline-build"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+        
+        //Do not edit the variable IMAGE_TAG. It uses the Jenkins job build ID as a tag for the new image.
+        IMAGE_TAG="${env.BUILD_ID}"
+
+        // ECS Cluster Cfg
+
+        CLUSTER_NAME="jenkins-ecs-cluster"
+	    SERVICE_NAME="springboot-backend"
+	    TASK_DEFINITION_NAME="springboot-backend-taskdefinition"
+        DESIRED_COUNT="1"
+    } 
+    tools{
+        maven 'Maven_3.8.4'
+    }
+    stages { 
+       stage('Logging into AWS ECR') {
+            steps {
+                script {
+                sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+                }
+                 
+            }
+        }
+        
+        stage('Build maven') { 
+            steps { 
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/techroy/DockerExample']])
+                sh 'mvn clean install'
+            }
+        }
+
+	 // Building Docker images
+    	stage('Building image') {
+      		steps{
+        		script {
+          				
+					
+					dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+        			}
+                    }
+   	 }
+
+	stage('Pushing to ECR') {
+     steps{  
+         script {
+                sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
+                sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+         }
+        }
+      }
+
+	
+
+    }
+    
+   
+}
