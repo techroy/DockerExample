@@ -68,7 +68,7 @@ pipeline {
             script {
 			        sh "chmod +x -R ${env.WORKSPACE}"
                     sh 'chmod +x ./ecs_script.sh'
-                    sh 'sed -i 's/\r$//' ecs_script.sh'
+                    sh "sed -i 's/\r$//' ecs_script.sh"
 			        sh './ecs_script.sh'
                 }
             
