@@ -19,16 +19,6 @@
             "mountPoints": [],
             "volumesFrom": [],
             "ulimits": [],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "/ecs/TASK_DEF_LOG_GROUP_NAME",
-                    "awslogs-create-group": "true",
-                    "awslogs-region": "REGION_NAME",
-                    "awslogs-stream-prefix": "ecs"
-                },
-                "secretOptions": []
-            },
             "systemControls": []
         }
     ],
