@@ -1,4 +1,5 @@
 sed -i "s#CONTAINER_NAME#$SERVICE_NAME#g" task-definition.json
+sed -i "s#REPOSITORY_URI#$REPOSITORY_URI#g" task-definition.json
 sed -i "s#BUILD_NUMBER#$IMAGE_TAG#g" task-definition.json
 sed -i "s#TASK_DEF_LOG_GROUP_NAME#$TASK_DEFINITION_NAME#g" task-definition.json
 sed -i "s#REGION_NAME#$AWS_DEFAULT_REGION#g" task-definition.json
